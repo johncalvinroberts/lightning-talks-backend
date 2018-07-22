@@ -12,6 +12,9 @@ Simple express server
   * *POST* `/auth/login`
       - ```{username, password}```
       - returns `token`
+  * *GET* `/auth/profile`
+    - protected
+    - returns user object of current user
 
 #### posts
   * *GET* `/api/posts`
@@ -21,4 +24,4 @@ Simple express server
   * *POST* `/api/posts`
     - protected
     - Create a lighning talk
-    - ```{title, content, }```
+    - ```{ title, content }```

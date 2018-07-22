@@ -4,7 +4,11 @@ const Schema = mongoose.Schema
 
 const userSchema = new Schema({
   username: String,
-  password: String
+  password: String,
+  posts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Post'
+  }]
 })
 
 userSchema.plugin(passportLocalMongoose)

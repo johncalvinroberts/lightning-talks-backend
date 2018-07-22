@@ -17,9 +17,9 @@ const PostController = {
       next(error)
     }
   },
-  async addPost ({body: { post }}, res, next) {
+  async addPost ({user, body: { post }}, res, next) {
     try {
-      const response = await PostService.createPost(post)
+      const response = await PostService.createPost(post, user)
       res.json(response)
     } catch (error) {
       next(error)

@@ -1,11 +1,10 @@
 import Post from '../models/post'
-import cuid from 'cuid'
-import slug from 'limax'
 import sanitizeHtml from 'sanitize-html'
 
 const PostService = {
   _fields: ['title', 'content', 'slug', 'dateAdded', 'cuid'],
-  getPaginatedPosts (page) {
+  _relationships: ['user', 'votes'],
+  getPaginatedPosts (page, user) {
     return new Promise(async (resolve, reject) => {
       try {
         const skipAmt = (parseInt(page) * 10) - 10
@@ -13,6 +12,7 @@ const PostService = {
         const postsPromise = Post.find()
           .sort('-dateAdded')
           .select(this._fields)
+          .populate('_user', ['username'])
           .skip(skipAmt)
           .limit(10)
         const [posts, count] = await Promise.all([postsPromise, countPromise])
@@ -22,10 +22,12 @@ const PostService = {
       }
     })
   },
-  async getPostBySlug (slug) {
+  getPostBySlug (slug) {
     return new Promise(async (resolve, reject) => {
       try {
-        const post = await Post.findOne({ slug }).select(this._fields)
+        const post = await Post.findOne({ slug })
+          .select(this._fields)
+          .populate('_user', ['username'])
         if (!post) {
           const error = new Error('Post not found')
           error.status = 404
@@ -37,14 +39,13 @@ const PostService = {
       }
     })
   },
-  createPost ({title, content}) {
+  createPost ({title, content}, user) {
     return new Promise(async (resolve, reject) => {
       try {
         const newPost = new Post({
           title: sanitizeHtml(title),
           content: sanitizeHtml(content),
-          slug: slug(title.toLowerCase(), { lowercase: true }),
-          cuid: cuid()
+          _user: user._id
         })
         const post = await newPost.save()
         resolve(post)
