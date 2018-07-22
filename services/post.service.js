@@ -2,11 +2,12 @@ import Post from '../models/post'
 import sanitizeHtml from 'sanitize-html'
 
 const PostService = {
-  _fields: ['title', 'content', 'slug', 'dateAdded', 'cuid'],
-  _relationships: ['user', 'votes'],
+  _fields: ['title', 'content', 'slug', 'dateAdded', 'upvotes'],
+  _relationships: ['upvotes'],
   getPaginatedPosts (page, user) {
     return new Promise(async (resolve, reject) => {
       try {
+        // TODO: get votes count..use aggregate
         const skipAmt = (parseInt(page) * 10) - 10
         const countPromise = Post.count()
         const postsPromise = Post.find()

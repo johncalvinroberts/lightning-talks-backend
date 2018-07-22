@@ -8,21 +8,33 @@ const postSchema = new Schema({
   content: { type: 'String', required: true },
   dateAdded: { type: 'Date', default: Date.now, required: true },
   slug: { type: String, slug: ['title'], unique: true },
-  _user: { type: Schema.Types.ObjectId, ref: 'User' }
+  _user: { type: Schema.Types.ObjectId, ref: 'User' },
+  upvotes: [{ type: Schema.Types.ObjectId, ref: 'Vote' }]
 })
 
-postSchema.pre('save', function (next) {
+postSchema.pre('save', async function (next) {
   if (!this.isNew) return next()
   try {
-    User.update({ _id: this._user }, {$push: { posts: this._id }})
+    await User.update({ _id: this._user }, {$push: { posts: this._id }})
     next()
   } catch (error) {
-    console.log(error)
     next(error)
   }
 })
 
 postSchema.index('slug')
+
+postSchema.set('toJSON', {
+  transform: (doc, {title, content, slug, dateAdded, upvotes}, options) => {
+    return {
+      title,
+      content,
+      slug,
+      dateAdded,
+      upvotes: upvotes.length
+    }
+  }
+})
 
 const Post = mongoose.plugin(slug).model('Post', postSchema)
 

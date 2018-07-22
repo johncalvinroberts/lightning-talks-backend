@@ -1,6 +1,6 @@
 import PostService from '../services/post.service'
 
-const PostController = {
+const PostsController = {
   async getAll ({ query: { page = 1 } }, res, next) {
     try {
       const response = await PostService.getPaginatedPosts(page)
@@ -27,4 +27,4 @@ const PostController = {
   }
 }
 
-export default PostController
+export default PostsController

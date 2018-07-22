@@ -5,10 +5,8 @@ const Schema = mongoose.Schema
 const userSchema = new Schema({
   username: String,
   password: String,
-  posts: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Post'
-  }]
+  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+  upvotes: [{ type: Schema.Types.ObjectId, ref: 'Vote' }]
 })
 
 userSchema.plugin(passportLocalMongoose)
