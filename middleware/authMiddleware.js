@@ -1,13 +1,13 @@
 // passport config
 import User from '../models/user'
 import passport from 'passport'
-const passportJWT = require('passport-jwt')
+import passportJWT from 'passport-jwt'
+import { Strategy } from 'passport-local'
 const JWTStrategy = passportJWT.Strategy
 const ExtractJWT = passportJWT.ExtractJwt
-const LocalStrategy = require('passport-local').Strategy
 
 const initPassport = () => {
-  passport.use(new LocalStrategy({
+  passport.use(new Strategy({
     usernameField: 'username',
     passwordField: 'password'
   }, User.authenticate()))
