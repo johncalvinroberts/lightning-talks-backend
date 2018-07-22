@@ -22,6 +22,14 @@ Simple express server
   * *GET* `/api/posts/:slug`
     - returns detail of a single lightning talk
   * *POST* `/api/posts`
+    - ```{ title, content }```
     - protected
     - Create a lighning talk
-    - ```{ title, content }```
+
+### votes
+  * *POST* `/api/posts/:slug/upvote`
+    - protected
+    - upvote a lightning talk
+  * *DELETE* `/api/posts/:slug/upvote`
+    - protected
+    - remove an upvote for a lightning talk
