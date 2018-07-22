@@ -3,6 +3,22 @@
 Simple express server
 
 ## API
-#### posts
 
-### users
+* Protected routes require authorization header,   `Authorization: Bearer [token]`
+
+### authentication
+  * *POST* `/auth/register`
+      - ```{username, password}```
+  * *POST* `/auth/login`
+      - ```{username, password}```
+      - returns `token`
+
+#### posts
+  * *GET* `/api/posts`
+    - returns paginated list of lightning talks
+  * *GET* `/api/posts/:slug`
+    - returns detail of a single lightning talk
+  * *POST* `/api/posts`
+    - protected
+    - Create a lighning talk
+    - ```{title, content, }```
