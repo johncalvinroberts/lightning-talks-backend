@@ -1,20 +1,11 @@
-import { Router } from 'express'
 import PostController from '../controllers/post.controller'
-const router = new Router()
+import { authenticate } from '../middleware/authMiddleware'
 
-// Get all Posts
-router.get('/posts', (req, res) => {
-  PostController.getAll(req, res)
-})
+export default function initPostRoutes (server) {
+  server.route('/api/posts')
+    .get(PostController.getAll)
+    .post(authenticate, PostController.addPost)
 
-// Get one post by cuid
-router.get('/posts/:cuid', (req, res) => {
-  PostController.getPost(req, res)
-})
-
-// Add a new Post
-router.post('/posts', (req, res) => {
-  PostController.addPost(req, res)
-})
-
-export default router
+  server.route('/api/posts/:slug')
+    .get(PostController.getPost)
+}

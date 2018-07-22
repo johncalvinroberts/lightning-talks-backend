@@ -1,54 +1,39 @@
+/* eslint-disable import/first */
+const prod = process.env.NODE_ENV === 'production'
+if (!prod) {
+  require('dotenv').config()
+}
 import express from 'express'
 import bodyParser from 'body-parser'
+import compression from 'compression'
+import cors from 'cors'
 import connectToDb from './db/connect'
-import postRoutes from './routes/posts.routes'
-import authRoutes from './routes/auth.routes'
-import userRoutes from './routes/user.routes'
-import User from './models/user'
-
-// passport config
-import passport from 'passport'
-const passportJWT = require('passport-jwt')
-const JWTStrategy = passportJWT.Strategy
-const ExtractJWT = passportJWT.ExtractJwt
-
-const LocalStrategy = require('passport-local').Strategy
+import initPostRoutes from './routes/posts.routes'
+import initAuthRoutes from './routes/auth.routes'
+import { initPassport } from './middleware/authMiddleware'
 
 const server = express()
 connectToDb()
 server.use(bodyParser.json())
-server.use(bodyParser.urlencoded({
-  extended: false
-}))
+server.use(bodyParser.urlencoded({extended: false}))
+server.use(compression())
+server.use(cors())
 
-server.use(passport.initialize())
-server.use(passport.initialize())
-passport.use(new LocalStrategy({
-  usernameField: 'username',
-  passwordField: 'password'
-}, User.authenticate()))
+server.use(initPassport())
 
-const passportFindUser = (jwtPayload, cb) => {
-  return User.findById(jwtPayload.id)
-    .then(user => {
-      return cb(null, user)
-    })
-    .catch(err => {
-      return cb(err)
-    })
-}
-passport.serializeUser(User.serializeUser())
-passport.deserializeUser(User.deserializeUser())
-passport.use(new JWTStrategy({
-  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'ILovePokemon'
-}, passportFindUser))
+// initialize routes
+initPostRoutes(server)
+initAuthRoutes(server)
 
-server.get('/', (req, res) => res.send('Hello World!'))
-server.use('/api', postRoutes)
-server.use('/auth', authRoutes)
-server.use('/user', passport.authenticate('jwt', { session: false }), userRoutes)
+// error handler, needs to be last middleware to be declared
+server.use((err, req, res, next) => {
+  res.status(err.status || 500)
+  res.json({
+    message: err.message,
+    error: {}
+  })
+})
 
 server.listen(3005, () => {
-  console.log('server started - 3005')
+  console.log('server started, listening on port 3005')
 })

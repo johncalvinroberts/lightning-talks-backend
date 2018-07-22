@@ -1,24 +1,36 @@
-import jwt from 'jsonwebtoken'
-// import expressJwt from 'express-jwt'
-// let authenticate = expressJwt({ secret: SECRET })
+// passport config
+import User from '../models/user'
+import passport from 'passport'
+const passportJWT = require('passport-jwt')
+const JWTStrategy = passportJWT.Strategy
+const ExtractJWT = passportJWT.ExtractJwt
+const LocalStrategy = require('passport-local').Strategy
 
-const TOKENTIME = 60 * 60 * 24 * 30 // 30 days
-const SECRET = 'ILovePokemon'
+const initPassport = () => {
+  passport.use(new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password'
+  }, User.authenticate()))
 
-export const generateToken = (req, res, next) => {
-  req.token = req.token || {}
-  req.token = jwt.sign({
-    id: req.user.id,
-    username: req.user.username
-  }, SECRET, {
-    expiresIn: TOKENTIME // 30 days
-  })
-  next()
+  const passportFindUser = (jwtPayload, cb) => {
+    return User.findById(jwtPayload.id)
+      .then(user => {
+        return cb(null, user)
+      })
+      .catch(err => {
+        return cb(err)
+      })
+  }
+  passport.serializeUser(User.serializeUser())
+  passport.deserializeUser(User.deserializeUser())
+
+  // authorization through JWT in header `Authorization: Bearer [token]`
+  passport.use(new JWTStrategy({
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET
+  }, passportFindUser))
+  return passport.initialize()
 }
 
-export const respond = (req, res) => {
-  res.status(200).json({
-    user: req.user.username,
-    token: req.token
-  })
-}
+const authenticate = passport.authenticate('jwt', { session: false })
+export { initPassport, authenticate }

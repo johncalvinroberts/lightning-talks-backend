@@ -1,18 +1,13 @@
-import { Router } from 'express'
 import AuthController from '../controllers/auth.controller'
+import { authenticate } from '../middleware/authMiddleware'
 
-const router = new Router()
+export default function initAuthRoutes (server) {
+  server.route('/auth/register')
+    .post(AuthController.register)
 
-router.post('/register', (req, res) => {
-  AuthController.register(req, res)
-})
+  server.route('/auth/login')
+    .post(AuthController.login)
 
-router.post('/login', (req, res, next) => {
-  AuthController.login(req, res, next)
-})
-
-router.get('/profile', (req, res) => {
-  AuthController.profile(req, res)
-})
-
-export default router
+  server.route('/auth/profile')
+    .get(authenticate, AuthController.profile)
+}
