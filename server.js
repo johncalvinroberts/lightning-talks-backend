@@ -18,7 +18,10 @@ connectToDb()
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: false}))
 server.use(compression())
-server.use(cors())
+server.use(cors({
+  origin: prod ? 'https://productionurl.com' : ['http://localhost:8080'],
+  credentials: true
+}))
 
 server.use(initPassport())
 
