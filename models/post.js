@@ -25,13 +25,14 @@ postSchema.pre('save', async function (next) {
 postSchema.index('slug')
 
 postSchema.set('toJSON', {
-  transform: (doc, {title, content, slug, dateAdded, upvotes}, options) => {
+  transform: (doc, {title, content, slug, dateAdded, upvotes, _user}, options) => {
     return {
       title,
       content,
       slug,
       dateAdded,
-      upvotes: upvotes.length
+      upvotes: upvotes.length,
+      _user
     }
   }
 })

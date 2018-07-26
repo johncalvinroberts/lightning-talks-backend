@@ -1,19 +1,23 @@
 import Post from '../models/post'
 import sanitizeHtml from 'sanitize-html'
+const sortMethods = {
+  newest: '-dateAdded',
+  upvotes: { 'upvotes': -1 }
+}
 
 const PostService = {
   _fields: ['title', 'content', 'slug', 'dateAdded', 'upvotes'],
-  getPaginatedPosts (page, user) {
+  getPaginatedPosts (page, sort = 'newest') {
     return new Promise(async (resolve, reject) => {
       try {
-        const skipAmt = (parseInt(page) * 10) - 10
+        const skipAmt = (parseInt(page) * 20) - 20
         const countPromise = Post.count()
         const postsPromise = Post.find()
-          .sort('-dateAdded')
+          .sort(sortMethods[sort])
           .select(this._fields)
           .populate('_user', ['username'])
           .skip(skipAmt)
-          .limit(10)
+          .limit(20)
         const [posts, count] = await Promise.all([postsPromise, countPromise])
         resolve({ posts, count, page })
       } catch (error) {

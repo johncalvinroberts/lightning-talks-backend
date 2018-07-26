@@ -1,9 +1,9 @@
 import PostService from '../services/post.service'
 
 const PostsController = {
-  async getAll ({ query: { page = 1 } }, res, next) {
+  async getAll ({ query: { page = 1, sort } }, res, next) {
     try {
-      const response = await PostService.getPaginatedPosts(page)
+      const response = await PostService.getPaginatedPosts(page, sort)
       res.json(response)
     } catch (error) {
       next(error)

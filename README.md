@@ -19,6 +19,7 @@ Simple express server
 #### posts
   * *GET* `/api/posts`
     - returns paginated list of lightning talks
+    - can pass `sort` param, accepted values are `newest` and `upvotes`
   * *GET* `/api/posts/:slug`
     - returns detail of a single lightning talk
   * *POST* `/api/posts`
