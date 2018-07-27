@@ -15,7 +15,7 @@ userSchema.plugin(passportLocalMongoose)
 const User = mongoose.model('User', userSchema)
 
 userSchema.set('toJSON', {
-  transform: (doc, { __v, _id, ...rest }, options) => {
+  transform: (doc, { __v, ...rest }, options) => {
     return {
       ...rest
     }
