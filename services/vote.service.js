@@ -1,7 +1,7 @@
 import Vote from '../models/vote'
 
 const VoteService = {
-  createFromId (id, user) {
+  createFromPostId (id, user) {
     return new Promise(async (resolve, reject) => {
       try {
         await Vote.findOrCreate({ _post: id, _user: user._id })
@@ -11,7 +11,7 @@ const VoteService = {
       }
     })
   },
-  removeById (id, user) {
+  removeByPostId (id, user) {
     return new Promise(async (resolve, reject) => {
       try {
         const upvote = await Vote.findOne({_post: id, _user: user._id})

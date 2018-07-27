@@ -12,7 +12,7 @@ const voteSchema = new Schema({
 
 voteSchema.pre('save', async function (next) {
   try {
-    await User.update({ _id: this._user }, { $push: { upvotes: this._id } })
+    await User.update({ _id: this._user }, { $push: { upvotes: this._post } })
     await Post.update({ _id: this._post }, { $push: { upvotes: this._id } })
     next()
   } catch (error) {
@@ -22,7 +22,7 @@ voteSchema.pre('save', async function (next) {
 
 voteSchema.post('remove', async function (next) {
   try {
-    await User.update({ _id: this._user }, { $pull: { upvotes: this._id } })
+    await User.update({ _id: this._user }, { $pull: { upvotes: this._post } })
     await Post.update({ _id: this._post }, { $pull: { upvotes: this._id } })
   } catch (error) {
     next(error)
