@@ -4,7 +4,7 @@ Simple express server
 
 ## API
 
-* Protected routes require authorization header,   `Authorization: Bearer [token]`
+* Protected routes require authorization header `Authorization: Bearer [token]`
 
 ### authentication
   * *POST* `/auth/register`
@@ -16,7 +16,7 @@ Simple express server
     - protected
     - returns user object of current user
 
-#### posts
+### posts
   * *GET* `/api/posts`
     - returns paginated list of lightning talks
     - can pass `sort` param, accepted values are `newest` and `upvotes`
@@ -25,7 +25,7 @@ Simple express server
   * *POST* `/api/posts`
     - ```{ title, content }```
     - protected
-    - Create a lighning talk
+    - Create a lightning talk
 
 ### votes
   * *POST* `/api/posts/:slug/upvote`
