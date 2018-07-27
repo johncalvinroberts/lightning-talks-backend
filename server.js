@@ -11,6 +11,7 @@ import connectToDb from './db/connect'
 import initPostRoutes from './routes/posts.routes'
 import initAuthRoutes from './routes/auth.routes'
 import initVoteRoutes from './routes/votes.routes'
+import initUsersRoutes from './routes/users.routes'
 import { initPassport } from './middleware/authMiddleware'
 
 const server = express()
@@ -28,6 +29,7 @@ server.use(initPassport())
 // initialize routes
 initPostRoutes(server)
 initAuthRoutes(server)
+initUsersRoutes(server)
 initVoteRoutes(server)
 
 // error handler, needs to be last middleware to be declared

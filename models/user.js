@@ -6,11 +6,20 @@ const userSchema = new Schema({
   username: String,
   password: String,
   posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
-  upvotes: [{ type: Schema.Types.ObjectId, ref: 'Vote' }]
+  upvotes: [{ type: Schema.Types.ObjectId, ref: 'Vote' }],
+  dateAdded: { type: 'Date', default: Date.now, required: true }
 })
 
 userSchema.plugin(passportLocalMongoose)
 
 const User = mongoose.model('User', userSchema)
+
+userSchema.set('toJSON', {
+  transform: (doc, { __v, _id, ...rest }, options) => {
+    return {
+      ...rest
+    }
+  }
+})
 
 export default User
