@@ -20,7 +20,7 @@ server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: false}))
 server.use(compression())
 server.use(cors({
-  origin: prod ? 'https://productionurl.com' : ['http://localhost:8080'],
+  origin: prod ? 'https://lightning.johnny.sh' : ['http://localhost:8080'],
   credentials: true
 }))
 
