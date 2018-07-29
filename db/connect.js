@@ -5,7 +5,9 @@ mongoose.Promise = global.Promise
 
 const connectToDb = async () => {
   try {
-    await mongoose.connect(config.mongoUrl)
+    const prod = process.env.NODE_ENV === 'production'
+    const mongoUrl = prod ? process.env.MLAB_PRODUCTION_DB : config.mongoUrl
+    await mongoose.connect(mongoUrl)
   } catch (err) {
     console.log(err)
   }
